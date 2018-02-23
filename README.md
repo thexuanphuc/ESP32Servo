@@ -68,7 +68,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
         as a side effect, the pulse width is recomputed.
 
     int readTimerWidth() - Gets the PWM timer width (ESP32 ONLY) 
- 
 ```
  
 ### Useful Defaults:
