@@ -1,11 +1,11 @@
-=== Servo Library for ESP32 ===
+# Servo Library for ESP32
 
 This library attempts to faithfully replicate the semantics of the
 Arduino Servo library (see http://www.arduino.cc/en/Reference/Servo)
 for the ESP32, with two (optional) additions. The two new functions
 expose the ability of the ESP32 PWM timers to vary timer width.
 
-==== License ====
+## License
 
 Copyright (c) 2017 John K. Bennett.  All right reserved.
 
@@ -23,8 +23,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
-Library Description:
---------------------
+## Library Description:
 ```
     Servo - Class for manipulating servo motors connected to ESP32 pins.
     
@@ -61,8 +60,8 @@ Library Description:
     void detach() - Stops an the attached servo, frees the attached pin, and frees
         its channel for reuse.  
 ```
-    
-**New ESP32-specific functions**
+
+### **New ESP32-specific functions**
  
 ```
     setTimerWidth(value) - Sets the PWM timer width (must be 16-20) (ESP32 ONLY);
@@ -72,8 +71,8 @@ Library Description:
  
 ```
  
-Useful Defaults:
-----------------
+### Useful Defaults:
+
 default min pulse width for attach(): 544us
 
 default max pulse width for attach(): 2400us
