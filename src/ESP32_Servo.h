@@ -64,7 +64,8 @@
  
 #ifndef ESP32_Servo_h
 #define ESP32_Servo_h
-
+//Enforce only using PWM pins on the ESP32
+#define ENFORCE_PINS
 // Default Arduino Servo.h
 #define DEFAULT_uS_LOW 544
 #define DEFAULT_uS_HIGH 2400

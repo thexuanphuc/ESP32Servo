@@ -54,7 +54,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 #include "esp32-hal-ledc.h"
 #include "Arduino.h"
 
-//#define ENFORCE_PINS
+//
 
 // initialize the class variable ServoCount
 int Servo::ServoCount = 0;
@@ -134,6 +134,7 @@ int Servo::attach(int pin, int min, int max)
         }
         else
         {
+        	Serial.println("This pin can not be a servo"+String(pin)+"\r\nOnly use: 2,4,12-19,21-23,25-27,32-33");
             return 0;
         }
 #endif
@@ -236,11 +237,11 @@ void Servo::setTimerWidth(int value)
     // if positive multiply by diff; if neg, divide
     if (widthDifference > 0)
     {
-        this->ticks <<= widthDifference;
+        this->ticks = widthDifference * this->ticks;
     }
     else
     {
-        this->ticks >>= widthDifference;
+        this->ticks = this->ticks/-widthDifference;
     }
     
     this->timer_width = value;
