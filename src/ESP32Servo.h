@@ -64,6 +64,7 @@
  
 #ifndef ESP32_Servo_h
 #define ESP32_Servo_h
+#include "analogWrite.h"
 //Enforce only using PWM pins on the ESP32
 #define ENFORCE_PINS
 // Default Arduino Servo.h
