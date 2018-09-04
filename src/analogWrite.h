@@ -1,3 +1,4 @@
+/*
 namespace Mitov
 {
   uint8_t CESP32PWMTimers[ 2 ] = {0};
@@ -46,3 +47,4 @@ namespace Mitov
     ledcWrite( Mitov::CESP32PWMPinMap[ APin ] - 1, AValue );
 //    Serial.print( "ledcWrite: " ); Serial.print( Mitov::CESP32PWMPinMap[ APin ] - 1 ); Serial.print( " " ); Serial.println( AValue );
   }
+*/
