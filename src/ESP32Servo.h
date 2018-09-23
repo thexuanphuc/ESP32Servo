@@ -65,6 +65,7 @@
 #ifndef ESP32_Servo_h
 #define ESP32_Servo_h
 #include "analogWrite.h"
+#include "ESP32PWM.h"
 //Enforce only using PWM pins on the ESP32
 #define ENFORCE_PINS
 // Default Arduino Servo.h
@@ -137,9 +138,10 @@ public:
   private: 
    int usToTicks(int usec);
    int ticksToUs(int ticks);
-   static int ServoCount;                             // the total number of attached servos
-   static int ChannelUsed[];                          // used to track whether a channel is in service
-   int servoChannel = 0;                              // channel number for this servo
+//   static int ServoCount;                             // the total number of attached servos
+//   static int ChannelUsed[];                          // used to track whether a channel is in service
+//   int servoChannel = 0;                              // channel number for this servo
+   ESP32PWM * pwm;
    int min = DEFAULT_uS_LOW;                          // minimum pulse width for this servo   
    int max = DEFAULT_uS_HIGH;                         // maximum pulse width for this servo 
    int pinNumber = 0;                                 // GPIO pin assigned to this channel
