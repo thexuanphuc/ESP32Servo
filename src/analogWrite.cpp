@@ -15,6 +15,8 @@ void analogWrite(uint8_t APin, uint16_t AValue) {
 		chan = new ESP32PWM();
 		chan->setup( 1000, 8); // 1KHz 8 bit
 		chan->attachPin(APin);
+        //Serial.println("Attaching AnalogWrite : "+String(APin)+" on PWM "+String(chan->getChannel()));
+
 	}
 	chan->write( AValue);
 //    Serial.print( "ledcWrite: " ); Serial.print(  CESP32PWMPinMap[ APin ] - 1 ); Serial.print( " " ); Serial.println( AValue );

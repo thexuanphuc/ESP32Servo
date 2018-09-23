@@ -55,22 +55,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
 //
 Servo::Servo()
-{
-	pwm =NULL;
+{		// initialize this channel with plausible values, except pin # (we set pin # when attached)
+	this->ticks = DEFAULT_PULSE_WIDTH_TICKS;
+	this->timer_width = DEFAULT_TIMER_WIDTH;
+	this->pinNumber = -1;     // make it clear that we haven't attached a pin to this channel
+	this->min = DEFAULT_uS_LOW;
+	this->max = DEFAULT_uS_HIGH;
+	this->timer_width_ticks = pow(2,this->timer_width);
+
 }
 ESP32PWM * Servo::getPwm(){
-	if(pwm ==NULL){
-		pwm = new ESP32PWM();
-		// initialize this channel with plausible values, except pin # (we set pin # when attached)
-		this->ticks = DEFAULT_PULSE_WIDTH_TICKS;
-		this->timer_width = DEFAULT_TIMER_WIDTH;
-		this->pinNumber = -1;     // make it clear that we haven't attached a pin to this channel
-		this->min = DEFAULT_uS_LOW;
-		this->max = DEFAULT_uS_HIGH;
-		this->timer_width_ticks = pow(2,this->timer_width);
 
-	}
-	return pwm;
+	return &pwm;
 }
 
 int Servo::attach(int pin)
@@ -90,7 +86,6 @@ int Servo::attach(int pin, int min, int max)
                 ((pin >= 25) && (pin <= 27)) || (pin == 32) || (pin == 33))
         {
 #endif
-            Serial.println("Attaching servo : "+String(pin)+" on PWM "+String(getPwm()->getChannel()));
 
             // OK to proceed; first check for new/reuse
             if (this->pinNumber < 0) // we are attaching to a new or previously detached pin; we need to initialize/reinitialize
@@ -121,6 +116,7 @@ int Servo::attach(int pin, int min, int max)
         // if you want anything other than default timer width, you must call setTimerWidth() before attach
         getPwm()->setup( REFRESH_CPS, this->timer_width); // channel #, 50 Hz, timer width
         getPwm()->attachPin(this->pinNumber );   // GPIO pin assigned to channel
+        //Serial.println("Attaching servo : "+String(pin)+" on PWM "+String(getPwm()->getChannel()));
         return 1;
 }
 
@@ -189,7 +185,7 @@ int Servo::readMicroseconds()
 
 bool Servo::attached()
 {
-    return (pwm!=NULL);
+    return (getPwm()->attached());
 }
 
 void Servo::setTimerWidth(int value)

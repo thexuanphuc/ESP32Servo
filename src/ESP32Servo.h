@@ -120,7 +120,7 @@
 class Servo
 {
 private:
-	   ESP32PWM * pwm;
+	   ESP32PWM  pwm;
 public:
   Servo();
   // Arduino Servo Library calls

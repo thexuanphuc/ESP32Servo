@@ -9,7 +9,8 @@
 #define LIBRARIES_ESP32SERVO_SRC_ESP32PWM_H_
 #include "esp32-hal-ledc.h"
 #define NUM_PWM 16
-#define USABLE_ESP32_PWM (NUM_PWM-1)
+#define PWM_BASE_INDEX 1
+#define USABLE_ESP32_PWM (NUM_PWM-PWM_BASE_INDEX)
 #include <cstdint>
 
 #include "Arduino.h"
@@ -18,7 +19,7 @@ private:
 	void detach();
 	void attach(int pin);
 	int pwmChannel = 0;                         // channel number for this servo
-
+	bool attachedState= false;
 	int pin;
 public:
 
@@ -37,9 +38,11 @@ public:
 	int getPin(){
 		return pin;
 	}
-	int getChannel(){
-		return pwmChannel;
+	int getChannel();
+	bool attached(){
+		return attachedState;
 	}
+
 };
 ESP32PWM* pwmFactory(int pin);
 
