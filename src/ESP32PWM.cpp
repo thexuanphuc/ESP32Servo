@@ -113,7 +113,8 @@ void ESP32PWM::attachPin(uint8_t pin) {
 		attach(pin);
 		ledcAttachPin(pin, getChannel());
 	}else{
-		Serial.println("ERROR PWM channel unavailible on pin requested! " + String(pin));
+		Serial.println("ERROR PWM channel unavailible on pin requested! " + String(pin)+
+				"\r\nPWM availible on: 2,4,5,12-19,21-23,25-27,32-33");
 
 	}
 }

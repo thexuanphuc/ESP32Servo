@@ -97,7 +97,7 @@ int Servo::attach(int pin, int min, int max)
         }
         else
         {
-        	Serial.println("This pin can not be a servo: "+String(pin)+"\r\nOnly use: 2,4,12-19,21-23,25-27,32-33");
+        	Serial.println("This pin can not be a servo: "+String(pin)+"\r\nServo availible on: 2,4,5,12-19,21-23,25-27,32-33");
             return 0;
         }
 #endif
