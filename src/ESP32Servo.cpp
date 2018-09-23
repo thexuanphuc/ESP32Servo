@@ -54,9 +54,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 #include "Arduino.h"
 
 //
-
-
-
 Servo::Servo()
 {
 	pwm =NULL;
@@ -112,7 +109,6 @@ int Servo::attach(int pin, int min, int max)
         }
 #endif
 
-    	getPwm()->attach(pin);
 
         // min/max checks 
         if (min < MIN_PULSE_WIDTH)          // ensure pulse width is valid
@@ -123,8 +119,8 @@ int Servo::attach(int pin, int min, int max)
         this->max = max;    //store this value in uS
         // Set up this channel
         // if you want anything other than default timer width, you must call setTimerWidth() before attach
-        ledcSetup(getPwm()->pwmChannel , REFRESH_CPS, this->timer_width); // channel #, 50 Hz, timer width
-        ledcAttachPin(this->pinNumber, getPwm()->pwmChannel );   // GPIO pin assigned to channel
+        getPwm()->setup( REFRESH_CPS, this->timer_width); // channel #, 50 Hz, timer width
+        getPwm()->attachPin(this->pinNumber );   // GPIO pin assigned to channel
         return 1;
 }
 
@@ -132,9 +128,8 @@ void Servo::detach()
 {
     if (this->attached())
     {
-        ledcDetachPin(this->pinNumber);
         //keep track of detached servos channels so we can reuse them if needed
-        getPwm()->detach();
+        getPwm()->detachPin(this->pinNumber);
 
         this->pinNumber = -1;
     }
@@ -168,7 +163,7 @@ void Servo::writeMicroseconds(int value)
         value = usToTicks(value);  // convert to ticks
         this->ticks = value;
         // do the actual write
-        ledcWrite(getPwm()->pwmChannel , this->ticks);
+        getPwm()->write( this->ticks);
     }
 }
 
@@ -225,9 +220,9 @@ void Servo::setTimerWidth(int value)
     if ((getPwm()->pwmChannel  < MAX_SERVOS) && (this->attached()))
     {
         // detach, setup and attach again to reflect new timer width
-        ledcDetachPin(this->pinNumber);
-        ledcSetup(getPwm()->pwmChannel , REFRESH_CPS, this->timer_width);
-        ledcAttachPin(this->pinNumber, getPwm()->pwmChannel );
+    	getPwm()->detachPin(this->pinNumber);
+    	getPwm()->setup( REFRESH_CPS, this->timer_width);
+    	getPwm()->attachPin(this->pinNumber );
     }        
 }
 
