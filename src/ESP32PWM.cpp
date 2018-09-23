@@ -66,7 +66,7 @@ double ESP32PWM::setup(double freq, uint8_t resolution_bits) {
 	return ledcSetup(getChannel(), freq, resolution_bits);
 }
 void ESP32PWM::write(uint32_t duty) {
-	return ledcWrite(getChannel(), duty);
+	 ledcWrite(getChannel(), duty);
 }
 double ESP32PWM::writeTone(double freq) {
 	return ledcWriteTone(getChannel(), freq);
@@ -82,7 +82,7 @@ double ESP32PWM::readFreq() {
 }
 void ESP32PWM::attachPin(uint8_t pin) {
 	attach(pin);
-	return ledcAttachPin(pin, getChannel());
+	 ledcAttachPin(pin, getChannel());
 }
 void ESP32PWM::detachPin(uint8_t pin) {
 	detach();
