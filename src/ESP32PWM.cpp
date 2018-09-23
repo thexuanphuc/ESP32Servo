@@ -8,8 +8,9 @@
 #include <ESP32PWM.h>
 #include "esp32-hal-ledc.h"
 // initialize the class variable ServoCount
-static int PWMCount = -1;              // the total number of attached servos
-static ESP32PWM * ChannelUsed[NUM_PWM]; // used to track whether a channel is in service
+int ESP32PWM::PWMCount = -1;              // the total number of attached servos
+ESP32PWM * ESP32PWM::ChannelUsed[NUM_PWM]; // used to track whether a channel is in service
+
 // The ChannelUsed array elements are 0 if never used, 1 if in use, and -1 if used and disposed
 // (i.e., available for reuse)
 
@@ -26,27 +27,23 @@ ESP32PWM::~ESP32PWM() {
 void ESP32PWM::detach() {
 
 	attachedState = false;
-	PWMCount--;
+
 	//Serial.println("Detatching " + String(pwmChannel));
 }
 
 void ESP32PWM::attach(int p) {
 	pin = p;
 
-	if (PWMCount == NUM_PWM) {
-		return;
-	}
-	PWMCount++;
 	getChannel();
 	attachedState = true;
 }
+
 
 int ESP32PWM::getChannel() {
 	if (PWMCount == -1) {
 		for (int i = 0; i < NUM_PWM; i++)
 			ChannelUsed[i] = NULL; // load invalid data into the storage array of pin mapping
 		PWMCount = PWM_BASE_INDEX; // 0th channel does not work with the PWM system
-
 	}
 	if (pwmChannel < 0) {
 		for (int i = PWM_BASE_INDEX; i < NUM_PWM; i++) {
@@ -54,6 +51,7 @@ int ESP32PWM::getChannel() {
 				ChannelUsed[i] = this;
 				pwmChannel = i;
 				//Serial.println("PWM channel requested " + String(i));
+				PWMCount++;
 				return pwmChannel;
 			}
 		}
@@ -130,9 +128,9 @@ void ESP32PWM::detachPin(uint8_t pin) {
 
 ESP32PWM* pwmFactory(int pin) {
 	for (int i = 0; i < NUM_PWM; i++)
-		if (ChannelUsed[i] != NULL) {
-			if (ChannelUsed[i]->getPin() == pin)
-				return ChannelUsed[i];
+		if (ESP32PWM::ChannelUsed[i] != NULL) {
+			if (ESP32PWM::ChannelUsed[i]->getPin() == pin)
+				return ESP32PWM::ChannelUsed[i];
 		}
 	return NULL;
 }

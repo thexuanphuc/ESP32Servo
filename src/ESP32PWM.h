@@ -48,7 +48,7 @@ public:
 	bool attached(){
 		return attachedState;
 	}
-	bool hasPwm(int pin){
+	static bool hasPwm(int pin){
         if ((pin == 2) || //1
         		(pin == 5) || //1
 				(pin ==4) || //1
@@ -59,8 +59,15 @@ public:
         	return true;
         return false;
 	}
+	static int channelsRemaining(){
+		return NUM_PWM-PWMCount;
+	}
+	static int PWMCount;              // the total number of attached servos
+	static ESP32PWM * ChannelUsed[NUM_PWM]; // used to track whether a channel is in service
+
 
 };
+
 ESP32PWM* pwmFactory(int pin);
 
 #endif /* LIBRARIES_ESP32SERVO_SRC_ESP32PWM_H_ */
