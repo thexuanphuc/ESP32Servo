@@ -84,7 +84,7 @@ void ESP32PWM::detachPin(uint8_t pin) {
 ESP32PWM* pwmFactory(int pin) {
 	for (int i = 0; i < NUM_PWM; i++)
 		if (ChannelUsed[i] != NULL) {
-			if (ChannelUsed[i]->pin == pin)
+			if (ChannelUsed[i]->getPin() == pin)
 				return ChannelUsed[i];
 		}
 	return NULL;

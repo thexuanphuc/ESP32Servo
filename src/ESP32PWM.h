@@ -17,13 +17,13 @@ class ESP32PWM {
 private:
 	void detach();
 	void attach(int pin);
+	int pwmChannel = 0;                         // channel number for this servo
 
-public:
 	int pin;
+public:
 
 	ESP32PWM();
 	virtual ~ESP32PWM();
-	int pwmChannel = 0;                         // channel number for this servo
 
 	//channel 0-15 resolution 1-16bits freq limits depend on resolution9
 	double      setup( double freq, uint8_t resolution_bits);
@@ -34,6 +34,12 @@ public:
 	double      readFreq();
 	void        attachPin(uint8_t pin);
 	void        detachPin(uint8_t pin);
+	int getPin(){
+		return pin;
+	}
+	int getChannel(){
+		return pwmChannel;
+	}
 };
 ESP32PWM* pwmFactory(int pin);
 

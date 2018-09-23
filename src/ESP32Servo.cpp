@@ -90,7 +90,7 @@ int Servo::attach(int pin, int min, int max)
                 ((pin >= 25) && (pin <= 27)) || (pin == 32) || (pin == 33))
         {
 #endif
-            Serial.println("Attaching servo : "+String(pin)+" on PWM "+String(getPwm()->pwmChannel));
+            Serial.println("Attaching servo : "+String(pin)+" on PWM "+String(getPwm()->getChannel()));
 
             // OK to proceed; first check for new/reuse
             if (this->pinNumber < 0) // we are attaching to a new or previously detached pin; we need to initialize/reinitialize
@@ -153,7 +153,7 @@ void Servo::write(int value)
 void Servo::writeMicroseconds(int value)
 {
     // calculate and store the values for the given channel
-    if ((getPwm()->pwmChannel  < MAX_SERVOS) && (this->attached()))   // ensure channel is valid
+    if (this->attached())   // ensure channel is valid
     {
         if (value < this->min)          // ensure pulse width is valid
             value = this->min;
@@ -175,7 +175,7 @@ int Servo::read() // return the value as degrees
 int Servo::readMicroseconds()
 {
     int pulsewidthUsec;
-    if ((getPwm()->pwmChannel  < MAX_SERVOS) && (this->attached()))
+    if (this->attached())
     { 
         pulsewidthUsec = ticksToUs(this->ticks);
     }
@@ -217,7 +217,7 @@ void Servo::setTimerWidth(int value)
     this->timer_width_ticks = pow(2,this->timer_width);
     
     // If this is an attached servo, clean up
-    if ((getPwm()->pwmChannel  < MAX_SERVOS) && (this->attached()))
+    if (this->attached())
     {
         // detach, setup and attach again to reflect new timer width
     	getPwm()->detachPin(this->pinNumber);

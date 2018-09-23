@@ -13,7 +13,6 @@ void analogWrite(uint8_t APin, uint16_t AValue) {
 	ESP32PWM* chan = pwmFactory(APin);
 	if (chan == NULL) {
 		chan = new ESP32PWM();
-		chan->pin = APin;
 		chan->setup( 1000, 8); // 1KHz 8 bit
 		chan->attachPin(APin);
 	}
