@@ -10,16 +10,16 @@ void setup() {
 void loop() {
 
     // fade the LED on thisPin from off to brightest:
-    for (float brightness = 0; brightness <=1; brightness+=0.001) {
+    for (float brightness = 0; brightness <=0.5; brightness+=0.001) {
       pwm.writeScaled(brightness);
       delay(2);
     }
-    delay(1000);
+    //delay(1000);
     // fade the LED on thisPin from brithstest to off:
-    for (float brightness = 1; brightness >= 0; brightness-=0.001) {
+    for (float brightness = 0.5; brightness >= 0; brightness-=0.001) {
       freq+=10;
       pwm.adjustFrequency(freq,brightness);// update the time base of the PWM
-      delay(20);
+      delay(2);
     }
     // pause between LEDs:
     delay(1000);

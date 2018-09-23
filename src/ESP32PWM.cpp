@@ -24,10 +24,10 @@ ESP32PWM::~ESP32PWM() {
 }
 
 void ESP32PWM::detach() {
-	ChannelUsed[getChannel()] = NULL;
-	pwmChannel = -1;
-	pin = -1;
+
 	attachedState = false;
+	PWMCount--;
+	//Serial.println("Detatching " + String(pwmChannel));
 }
 
 void ESP32PWM::attach(int p) {
@@ -36,6 +36,7 @@ void ESP32PWM::attach(int p) {
 	if (PWMCount == NUM_PWM) {
 		return;
 	}
+	PWMCount++;
 	getChannel();
 	attachedState = true;
 }
@@ -52,7 +53,6 @@ int ESP32PWM::getChannel() {
 			if (ChannelUsed[i] == NULL) {
 				ChannelUsed[i] = this;
 				pwmChannel = i;
-				PWMCount++;
 				//Serial.println("PWM channel requested " + String(i));
 				return pwmChannel;
 			}

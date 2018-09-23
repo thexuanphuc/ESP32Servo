@@ -9,13 +9,18 @@
 #include "ESP32PWM.h"
 
 void analogWrite(uint8_t APin, uint16_t AValue) {
+	if(APin== 25 ||APin==26){
+		dacWrite(APin, AValue);
+		return;
+	}
 	ESP32PWM* chan = pwmFactory(APin);
 	if (chan == NULL) {
 		chan = new ESP32PWM();
+	}
+	if(!chan->attached()){
 		chan->setup(1000, 8); // 1KHz 8 bit
 		chan->attachPin(APin); // This adds the PWM instance to the factory list
 		//Serial.println("Attaching AnalogWrite : "+String(APin)+" on PWM "+String(chan->getChannel()));
-
 	}
 	if (AValue == 0) {
 		if (chan->attached()) {

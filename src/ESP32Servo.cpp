@@ -78,8 +78,6 @@ int Servo::attach(int pin)
 int Servo::attach(int pin, int min, int max)
 {
 
-	getPwm();
-
 #ifdef ENFORCE_PINS
         // Recommend only the following pins 2,4,12-19,21-23,25-27,32-33
         if ((pin == 2) || (pin ==4) || ((pin >= 12) && (pin <= 19)) || ((pin >= 21) && (pin <= 23)) ||
@@ -114,9 +112,9 @@ int Servo::attach(int pin, int min, int max)
         this->max = max;    //store this value in uS
         // Set up this channel
         // if you want anything other than default timer width, you must call setTimerWidth() before attach
-        getPwm()->setup( REFRESH_CPS, this->timer_width); // channel #, 50 Hz, timer width
-        getPwm()->attachPin(this->pinNumber );   // GPIO pin assigned to channel
-        //Serial.println("Attaching servo : "+String(pin)+" on PWM "+String(getPwm()->getChannel()));
+        pwm.setup( REFRESH_CPS, this->timer_width); // channel #, 50 Hz, timer width
+        pwm.attachPin(this->pinNumber );   // GPIO pin assigned to channel
+        //Serial.println("Attaching servo : "+String(pin)+" on PWM "+String(pwm.getChannel()));
         return 1;
 }
 
@@ -125,7 +123,7 @@ void Servo::detach()
     if (this->attached())
     {
         //keep track of detached servos channels so we can reuse them if needed
-        getPwm()->detachPin(this->pinNumber);
+        pwm.detachPin(this->pinNumber);
 
         this->pinNumber = -1;
     }
@@ -159,7 +157,7 @@ void Servo::writeMicroseconds(int value)
         value = usToTicks(value);  // convert to ticks
         this->ticks = value;
         // do the actual write
-        getPwm()->write( this->ticks);
+        pwm.write( this->ticks);
     }
 }
 
@@ -185,7 +183,7 @@ int Servo::readMicroseconds()
 
 bool Servo::attached()
 {
-    return (getPwm()->attached());
+    return (pwm.attached());
 }
 
 void Servo::setTimerWidth(int value)
@@ -216,9 +214,9 @@ void Servo::setTimerWidth(int value)
     if (this->attached())
     {
         // detach, setup and attach again to reflect new timer width
-    	getPwm()->detachPin(this->pinNumber);
-    	getPwm()->setup( REFRESH_CPS, this->timer_width);
-    	getPwm()->attachPin(this->pinNumber );
+    	pwm.detachPin(this->pinNumber);
+    	pwm.setup( REFRESH_CPS, this->timer_width);
+    	pwm.attachPin(this->pinNumber );
     }        
 }
 
