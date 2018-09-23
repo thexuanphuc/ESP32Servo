@@ -14,7 +14,7 @@ static ESP32PWM * ChannelUsed[NUM_PWM]; // used to track whether a channel is in
 // (i.e., available for reuse)
 
 ESP32PWM::ESP32PWM() {
-	resolutionBits=8;
+	resolutionBits = 8;
 	pwmChannel = -1;
 	pin = -1;
 }
@@ -57,8 +57,7 @@ int ESP32PWM::getChannel() {
 				return pwmChannel;
 			}
 		}
-		Serial.println(
-				"ERROR All PWM channels requested! " + String(PWMCount));
+		Serial.println("ERROR All PWM channels requested! " + String(PWMCount));
 	}
 	return pwmChannel;
 }
@@ -74,8 +73,6 @@ double ESP32PWM::setup(double freq, uint8_t resolution_bits) {
 	return ledcSetup(getChannel(), freq, resolution_bits);
 }
 
-
-
 float mapf(float x, float in_min, float in_max, float out_min, float out_max) {
 	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
@@ -85,12 +82,24 @@ void ESP32PWM::writeScaled(float duty) {
 void ESP32PWM::write(uint32_t duty) {
 	ledcWrite(getChannel(), duty);
 }
+void ESP32PWM::adjustFrequency(double freq, float dutyScaled) {
+	if (attached()) {
+		int APin = pin;
+		detachPin(APin); // Remove the PWM during frequency adjust
+		writeTone(freq); // update the time base of the PWM
+		writeScaled(dutyScaled);
+		attachPin(APin); // re-attach the pin after frequency adjust
+	} else {
+		writeTone(freq); // update the time base of the PWM
+		writeScaled(dutyScaled);
+	}
+}
 double ESP32PWM::writeTone(double freq) {
-	resolutionBits=10;
+	resolutionBits = 10;
 	return ledcWriteTone(getChannel(), freq);
 }
 double ESP32PWM::writeNote(note_t note, uint8_t octave) {
-	resolutionBits=10;
+	resolutionBits = 10;
 	return ledcWriteNote(getChannel(), note, octave);
 }
 uint32_t ESP32PWM::read() {

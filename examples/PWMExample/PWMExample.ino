@@ -4,7 +4,7 @@ ESP32PWM  pwm;
 int freq = 1000;
 void setup() {
   Serial.begin(115200);
-  pwm.attachPin(APin,freq, 10);// 1KHz 10 bit
+  pwm.attachPin(APin,freq, 10);// 1KHz 8 bit
 
 }
 void loop() {
@@ -18,12 +18,12 @@ void loop() {
     // fade the LED on thisPin from brithstest to off:
     for (float brightness = 1; brightness >= 0; brightness-=0.001) {
       freq+=10;
-      pwm.writeTone(freq);// update the time base of the PWM
-      pwm.writeScaled(brightness);
-      delay(2);
+      pwm.adjustFrequency(freq,brightness);// update the time base of the PWM
+      delay(20);
     }
     // pause between LEDs:
     delay(1000);
+    //Serial.println(" PWM on "+String(thisPin));
     freq=1000;
-    pwm.writeTone(freq);// reset the fequency values
+    pwm.writeTone(freq);// reset the time base
 }

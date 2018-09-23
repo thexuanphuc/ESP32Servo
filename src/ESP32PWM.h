@@ -39,6 +39,8 @@ public:
 	void        attachPin(uint8_t pin);
 	void        attachPin(uint8_t pin,double freq, uint8_t resolution_bits);
 	void        detachPin(uint8_t pin);
+	void adjustFrequency(double freq,float dutyScaled);
+
 	int getPin(){
 		return pin;
 	}
