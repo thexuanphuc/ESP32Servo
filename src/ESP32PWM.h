@@ -40,13 +40,23 @@ public:
 	void        attachPin(uint8_t pin,double freq, uint8_t resolution_bits);
 	void        detachPin(uint8_t pin);
 	void adjustFrequency(double freq,float dutyScaled);
-
+	float mapf(float x, float in_min, float in_max, float out_min, float out_max);
 	int getPin(){
 		return pin;
 	}
 	int getChannel();
 	bool attached(){
 		return attachedState;
+	}
+	bool hasPwm(int pin){
+        if ((pin == 2) || //1
+        		(pin ==4) || //1
+        		((pin >= 12) && (pin <= 19)) ||//8
+				((pin >= 21) && (pin <= 23)) ||//3
+                ((pin >= 25) && (pin <= 27)) || //3
+				(pin == 32) || (pin == 33))//2
+        	return true;
+        return false;
 	}
 
 };

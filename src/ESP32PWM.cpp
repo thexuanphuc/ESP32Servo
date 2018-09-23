@@ -73,7 +73,7 @@ double ESP32PWM::setup(double freq, uint8_t resolution_bits) {
 	return ledcSetup(getChannel(), freq, resolution_bits);
 }
 
-float mapf(float x, float in_min, float in_max, float out_min, float out_max) {
+float ESP32PWM::mapf(float x, float in_min, float in_max, float out_min, float out_max) {
 	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 void ESP32PWM::writeScaled(float duty) {
@@ -109,8 +109,13 @@ double ESP32PWM::readFreq() {
 	return ledcReadFreq(getChannel());
 }
 void ESP32PWM::attachPin(uint8_t pin) {
-	attach(pin);
-	ledcAttachPin(pin, getChannel());
+	if(hasPwm(pin)){
+		attach(pin);
+		ledcAttachPin(pin, getChannel());
+	}else{
+		Serial.println("ERROR PWM channel unavailible on pin requested! " + String(pin));
+
+	}
 }
 void ESP32PWM::attachPin(uint8_t pin, double freq, uint8_t resolution_bits) {
 	setup(freq, resolution_bits);

@@ -81,8 +81,7 @@ int Servo::attach(int pin, int min, int max)
 
 #ifdef ENFORCE_PINS
         // Recommend only the following pins 2,4,12-19,21-23,25-27,32-33
-        if ((pin == 2) || (pin ==4) || ((pin >= 12) && (pin <= 19)) || ((pin >= 21) && (pin <= 23)) ||
-                ((pin >= 25) && (pin <= 27)) || (pin == 32) || (pin == 33))
+        if (pwm.hasPwm(pin))
         {
 #endif
 
