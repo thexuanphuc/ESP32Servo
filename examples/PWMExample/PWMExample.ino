@@ -1,27 +1,30 @@
 #include <ESP32Servo.h>
 int APin=13;
 ESP32PWM  pwm;
+int freq = 1000;
 void setup() {
   Serial.begin(115200);
-  pwm.setup( 1000, 8); // 1KHz 8 bit
-  pwm.attachPin(APin);
+  pwm.attachPin(APin,freq, 10);// 1KHz 8 bit
 
 }
 void loop() {
 
     // fade the LED on thisPin from off to brightest:
-    for (int brightness = 0; brightness < 255; brightness++) {
-      pwm.write(brightness);
+    for (float brightness = 0; brightness <=1; brightness+=0.001) {
+      pwm.writeScaled(brightness);
       delay(2);
     }
+    delay(1000);
     // fade the LED on thisPin from brithstest to off:
-    for (int brightness = 255; brightness >= 0; brightness--) {
-      pwm.write(brightness);
+    for (float brightness = 1; brightness >= 0; brightness-=0.001) {
+      freq+=10;
+      pwm.writeTone(freq);// update the time base of the PWM
+      pwm.writeScaled(brightness);
       delay(2);
     }
     // pause between LEDs:
-    delay(100);
+    delay(1000);
     //Serial.println(" PWM on "+String(thisPin));
-  
+    freq=1000;
+    pwm.writeTone(freq);
 }
-

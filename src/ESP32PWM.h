@@ -21,6 +21,7 @@ private:
 	int pwmChannel = 0;                         // channel number for this servo
 	bool attachedState= false;
 	int pin;
+	uint8_t resolutionBits;
 public:
 
 	ESP32PWM();
@@ -29,11 +30,14 @@ public:
 	//channel 0-15 resolution 1-16bits freq limits depend on resolution9
 	double      setup( double freq, uint8_t resolution_bits);
 	void        write( uint32_t duty);
+	// Write a duty cycle to the PWM using a unit vector from 0.0-1.0
+	void        writeScaled( float duty);
 	double      writeTone( double freq);
 	double      writeNote( note_t note, uint8_t octave);
 	uint32_t    read();
 	double      readFreq();
 	void        attachPin(uint8_t pin);
+	void        attachPin(uint8_t pin,double freq, uint8_t resolution_bits);
 	void        detachPin(uint8_t pin);
 	int getPin(){
 		return pin;

@@ -18,12 +18,16 @@ void analogWrite(uint8_t APin, uint16_t AValue) {
 
 	}
 	if (AValue == 0) {
-		chan->detachPin(APin);
-		pinMode(APin, OUTPUT);
+		if (chan->attached()) {
+			chan->detachPin(APin);
+			pinMode(APin, OUTPUT);
+		}
 		digitalWrite(APin, 0);
 	} else if (AValue >= 255) {
-		chan->detachPin(APin);
-		pinMode(APin, OUTPUT);
+		if (chan->attached()) {
+			chan->detachPin(APin);
+			pinMode(APin, OUTPUT);
+		}
 		digitalWrite(APin, 1);
 	} else
 		chan->write(AValue);
