@@ -56,6 +56,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 //
 Servo::Servo()
 {		// initialize this channel with plausible values, except pin # (we set pin # when attached)
+	REFRESH_CPS = 50;
 	this->ticks = DEFAULT_PULSE_WIDTH_TICKS;
 	this->timer_width = DEFAULT_TIMER_WIDTH;
 	this->pinNumber = -1;     // make it clear that we haven't attached a pin to this channel
@@ -202,7 +203,7 @@ void Servo::setTimerWidth(int value)
     {
         this->ticks = widthDifference * this->ticks;
     }
-    else
+    else if (widthDifference < 0)
     {
         this->ticks = this->ticks/-widthDifference;
     }
@@ -227,12 +228,12 @@ int Servo::readTimerWidth()
 
 int Servo::usToTicks(int usec)
 {
-    return (int)((float)usec / ((float)REFRESH_USEC / (float)this->timer_width_ticks));   
+    return (int)((float)usec / ((float)REFRESH_USEC / (float)this->timer_width_ticks)*(((float)REFRESH_CPS)/50.0));
 }
 
 int Servo::ticksToUs(int ticks)
 {
-    return (int)((float)ticks * ((float)REFRESH_USEC / (float)this->timer_width_ticks)); 
+    return (int)((float)ticks * ((float)REFRESH_USEC / (float)this->timer_width_ticks)/(((float)REFRESH_CPS)/50.0));
 }
 
  
