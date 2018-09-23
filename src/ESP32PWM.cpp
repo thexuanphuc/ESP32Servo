@@ -8,27 +8,33 @@
 #include <ESP32PWM.h>
 // initialize the class variable ServoCount
 static int ServoCount = -1;              // the total number of attached servos
-static ESP32PWM * ChannelUsed[NUM_WPM]; // used to track whether a channel is in service
+static ESP32PWM * ChannelUsed[NUM_PWM]; // used to track whether a channel is in service
 // The ChannelUsed array elements are 0 if never used, 1 if in use, and -1 if used and disposed
 // (i.e., available for reuse)
 
 ESP32PWM::ESP32PWM() {
 	if(ServoCount==-1){
-		for(int i=0;i<NUM_WPM;i++)
+		for(int i=0;i<NUM_PWM;i++)
 			ChannelUsed[i]=NULL;// load invalid data into the storage array of pin mapping
-		ServoCount=0;
+		ServoCount=1;// 0th channel does not work with the PWM system
+
 	}
-	if(ServoCount==NUM_WPM){
+	if(ServoCount==NUM_PWM){
 		return;
 	}
-	for(int i=0;i<NUM_WPM;i++)
+	pwmChannel=-1;
+	pin=-1;
+	for(int i=ServoCount;i<NUM_PWM;i++){
 		if(ChannelUsed[i] ==NULL){
 			ChannelUsed[i]=this;
 			pwmChannel=i;
-			break;
+			ServoCount++;
+			Serial.println("PWM channel requested "+String(i));
+			return;
 		}
-	pin=-1;
-	ServoCount++;
+	}
+	Serial.println("ERROR All PWM channels requested! "+String(ServoCount));
+
 }
 
 ESP32PWM::~ESP32PWM() {
@@ -36,7 +42,7 @@ ESP32PWM::~ESP32PWM() {
 }
 
 void ESP32PWM::detach(){
-	ChannelUsed[pwmChannel]=0;
+	ChannelUsed[pwmChannel]=NULL;
 	pwmChannel=-1;
     pin=-1;
 
@@ -47,7 +53,7 @@ void ESP32PWM::attach(int p){
 }
 ESP32PWM* pwmFactory(int pin)
 {
-	for(int i=0;i<NUM_WPM;i++)
+	for(int i=0;i<NUM_PWM;i++)
 			if(ChannelUsed[i] !=0){
 				if(ChannelUsed[i]->pin==pin)
 				 return ChannelUsed[i];

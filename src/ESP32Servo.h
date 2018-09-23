@@ -119,6 +119,8 @@
 
 class Servo
 {
+private:
+	   ESP32PWM * pwm;
 public:
   Servo();
   // Arduino Servo Library calls
@@ -141,12 +143,13 @@ public:
 //   static int ServoCount;                             // the total number of attached servos
 //   static int ChannelUsed[];                          // used to track whether a channel is in service
 //   int servoChannel = 0;                              // channel number for this servo
-   ESP32PWM * pwm;
+
    int min = DEFAULT_uS_LOW;                          // minimum pulse width for this servo   
    int max = DEFAULT_uS_HIGH;                         // maximum pulse width for this servo 
    int pinNumber = 0;                                 // GPIO pin assigned to this channel
    int timer_width = DEFAULT_TIMER_WIDTH;             // ESP32 allows variable width PWM timers
    int ticks = DEFAULT_PULSE_WIDTH_TICKS;             // current pulse width on this channel
    int timer_width_ticks = DEFAULT_TIMER_WIDTH_TICKS; // no. of ticks at rollover; varies with width
+   ESP32PWM * getPwm();// get the PWM object
 };
 #endif
