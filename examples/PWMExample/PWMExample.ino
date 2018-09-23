@@ -4,7 +4,7 @@ ESP32PWM  pwm;
 int freq = 1000;
 void setup() {
   Serial.begin(115200);
-  pwm.attachPin(APin,freq, 10);// 1KHz 8 bit
+  pwm.attachPin(APin,freq, 10);// 1KHz 10 bit
 
 }
 void loop() {
@@ -24,7 +24,6 @@ void loop() {
     }
     // pause between LEDs:
     delay(1000);
-    //Serial.println(" PWM on "+String(thisPin));
     freq=1000;
-    pwm.writeTone(freq);
+    pwm.writeTone(freq);// reset the fequency values
 }
