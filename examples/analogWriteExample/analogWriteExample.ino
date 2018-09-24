@@ -32,7 +32,7 @@ void setup() {
 
 void loop() {
 	if (!myservo.attached()) {
-		myservo.setPeriodHertz(450);
+		myservo.setPeriodHertz(50);// standard 50 hz servo
 		myservo.attach(33, 1000, 2000);
 	}
 	myservo.write(0);
@@ -59,5 +59,7 @@ void loop() {
 
 		}
 	}
+	myservo.detach();// Turn the servo off for a while
+	delay(2000);
 
 }

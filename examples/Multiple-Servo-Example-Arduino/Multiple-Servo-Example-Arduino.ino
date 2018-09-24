@@ -37,9 +37,9 @@
 
 // create four servo objects 
 Servo servo1;
-Servo servo2; 
-Servo servo3; 
-Servo servo4;  
+Servo servo2;
+Servo servo3;
+Servo servo4;
 
 // Published values for SG90 servos; adjust if needed
 int minUs = 500;
@@ -54,53 +54,57 @@ int servo4Pin = 23;
 
 int pos = 0;      // position in degrees
 
-void setup()
-{ 
-  servo1.attach(servo1Pin, minUs, maxUs);
-  servo2.attach(servo2Pin, minUs, maxUs);
-  servo3.attach(servo3Pin, minUs, maxUs);
-  servo4.attach(servo4Pin, minUs, maxUs);        
+void setup() {
+	servo1.setPeriodHertz(50);      // Standard 50hz servo
+	servo2.setPeriodHertz(50);      // Standard 50hz servo
+	servo3.setPeriodHertz(50);      // Standard 50hz servo
+	servo4.setPeriodHertz(50);      // Standard 50hz servo
+
+	servo1.attach(servo1Pin, minUs, maxUs);
+	servo2.attach(servo2Pin, minUs, maxUs);
+	servo3.attach(servo3Pin, minUs, maxUs);
+	servo4.attach(servo4Pin, minUs, maxUs);
 }
 
 void loop() {
-  for (pos = 0; pos <= 180; pos += 1) { // sweep from 0 degrees to 180 degrees
-    // in steps of 1 degree
-    servo1.write(pos);              
-    delay(20);                       // waits 20ms for the servo to reach the position
-  }
-  for (pos = 180; pos >= 0; pos -= 1) { // sweep from 180 degrees to 0 degrees
-    servo1.write(pos);
-    delay(20);      
-  }
+	for (pos = 0; pos <= 180; pos += 1) { // sweep from 0 degrees to 180 degrees
+		// in steps of 1 degree
+		servo1.write(pos);
+		delay(20);             // waits 20ms for the servo to reach the position
+	}
+	for (pos = 180; pos >= 0; pos -= 1) { // sweep from 180 degrees to 0 degrees
+		servo1.write(pos);
+		delay(20);
+	}
 
-  for (pos = 0; pos <= 180; pos += 1) { // sweep from 0 degrees to 180 degrees
-    // in steps of 1 degree
-    servo2.write(pos);              
-    delay(20);                       // waits 20ms for the servo to reach the position
-  }
-  for (pos = 180; pos >= 0; pos -= 1) { // sweep from 180 degrees to 0 degrees
-    servo2.write(pos);
-    delay(20);      
-  }
+	for (pos = 0; pos <= 180; pos += 1) { // sweep from 0 degrees to 180 degrees
+		// in steps of 1 degree
+		servo2.write(pos);
+		delay(20);             // waits 20ms for the servo to reach the position
+	}
+	for (pos = 180; pos >= 0; pos -= 1) { // sweep from 180 degrees to 0 degrees
+		servo2.write(pos);
+		delay(20);
+	}
 
-  for (pos = 0; pos <= 180; pos += 1) { // sweep from 0 degrees to 180 degrees
-    // in steps of 1 degree
-    servo3.write(pos);              
-    delay(20);                       // waits 20ms for the servo to reach the position
-  }
-  for (pos = 180; pos >= 0; pos -= 1) { // sweep from 180 degrees to 0 degrees
-    servo3.write(pos);
-    delay(20);      
-  }
+	for (pos = 0; pos <= 180; pos += 1) { // sweep from 0 degrees to 180 degrees
+		// in steps of 1 degree
+		servo3.write(pos);
+		delay(20);             // waits 20ms for the servo to reach the position
+	}
+	for (pos = 180; pos >= 0; pos -= 1) { // sweep from 180 degrees to 0 degrees
+		servo3.write(pos);
+		delay(20);
+	}
 
-  for (pos = 0; pos <= 180; pos += 1) { // sweep from 0 degrees to 180 degrees
-    // in steps of 1 degree
-    servo4.write(pos);              
-    delay(20);                       // waits 20ms for the servo to reach the position
-  }
-  for (pos = 180; pos >= 0; pos -= 1) { // sweep from 180 degrees to 0 degrees
-    servo4.write(pos);
-    delay(20);      
-  }
+	for (pos = 0; pos <= 180; pos += 1) { // sweep from 0 degrees to 180 degrees
+		// in steps of 1 degree
+		servo4.write(pos);
+		delay(20);             // waits 20ms for the servo to reach the position
+	}
+	for (pos = 180; pos >= 0; pos -= 1) { // sweep from 180 degrees to 0 degrees
+		servo4.write(pos);
+		delay(20);
+	}
 }
 
