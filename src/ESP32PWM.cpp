@@ -71,9 +71,6 @@ double ESP32PWM::setup(double freq, uint8_t resolution_bits) {
 	return ledcSetup(getChannel(), freq, resolution_bits);
 }
 
-float ESP32PWM::mapf(float x, float in_min, float in_max, float out_min, float out_max) {
-	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-}
 void ESP32PWM::writeScaled(float duty) {
 	write(mapf(duty, 0.0, 1.0, 0, (float) ((1 << resolutionBits) - 1)));
 }
