@@ -26,8 +26,8 @@ void setup() {
 
 void loop() {
 	if (!myservo.attached()) {
-		myservo.setPeriodHertz(50);// standard 50 hz servo
-		myservo.attach(33, 1000, 2000);// Attach the servo after it has been detatched
+		myservo.setPeriodHertz(50); // standard 50 hz servo
+		myservo.attach(33, 1000, 2000); // Attach the servo after it has been detatched
 	}
 	myservo.write(0);
 	// iterate over the pins:
@@ -35,10 +35,14 @@ void loop() {
 		if (ESP32PWM::hasPwm(thisPin) &&  // Is it possible for this pin to PWM
 				(ESP32PWM::channelsRemaining() > 0 || // New channels availible to allocate
 						pwmFactory(thisPin) != NULL || // already allocated this pin in the factory
-						thisPin == 25 || // one of the 2 DAC outputs, no timer needed
+						thisPin == 25 || // one of the  2 DAC outputs, no timer needed
 						thisPin == 26)) { // one of the 2 DAC outputs, no timer needed
-			if(pwmFactory(thisPin) == NULL){// check if its the first time for the pin or its a DAC
-				Serial.println("Writing to pin "+String(thisPin));
+			if (pwmFactory(thisPin) == NULL) { // check if its the first time for the pin or its a DAC
+				if (thisPin == 25 || // one of the 2 DAC outputs, no timer needed
+						thisPin == 26) {
+					Serial.println("DAC to pin " + String(thisPin));
+				} else
+					Serial.println("Writing to pin " + String(thisPin));
 				pinMode(thisPin, OUTPUT);
 			}
 			// fade the LED on thisPin from off to brightest:
@@ -56,7 +60,7 @@ void loop() {
 
 		}
 	}
-	myservo.detach();// Turn the servo off for a while
+	myservo.detach(); // Turn the servo off for a while
 	delay(2000);
 
 }
