@@ -50,7 +50,7 @@ int ESP32PWM::getChannel() {
 			if (ChannelUsed[i] == NULL) {
 				ChannelUsed[i] = this;
 				pwmChannel = i;
-				//Serial.println("PWM channel requested " + String(i));
+				Serial.println("PWM requested on ledcwrite channel " + String(i) + " using timer "+String(((i/2)%4)) );
 				PWMCount++;
 				return pwmChannel;
 			}
@@ -114,7 +114,8 @@ void ESP32PWM::attachPin(uint8_t pin) {
 	}
 }
 void ESP32PWM::attachPin(uint8_t pin, double freq, uint8_t resolution_bits) {
-	setup(freq, resolution_bits);
+	if(hasPwm(pin))
+		setup(freq, resolution_bits);
 	attachPin(pin);
 }
 
