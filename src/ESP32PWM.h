@@ -9,7 +9,7 @@
 #define LIBRARIES_ESP32SERVO_SRC_ESP32PWM_H_
 #include "esp32-hal-ledc.h"
 #define NUM_PWM 16
-#define PWM_BASE_INDEX 1
+#define PWM_BASE_INDEX 0
 #define USABLE_ESP32_PWM (NUM_PWM-PWM_BASE_INDEX)
 #include <cstdint>
 
@@ -22,6 +22,7 @@ private:
 	bool attachedState= false;
 	int pin;
 	uint8_t resolutionBits;
+	double myFreq;
 public:
 
 	ESP32PWM();
@@ -66,7 +67,10 @@ public:
 	}
 	static int PWMCount;              // the total number of attached servos
 	static ESP32PWM * ChannelUsed[NUM_PWM]; // used to track whether a channel is in service
-
+	int getTimer(){
+		return ((pwmChannel/2)%4);
+	}
+	bool checkFrequencyForSideEffects(double freq);
 
 };
 

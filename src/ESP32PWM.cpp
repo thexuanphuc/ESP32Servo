@@ -50,7 +50,7 @@ int ESP32PWM::getChannel() {
 			if (ChannelUsed[i] == NULL) {
 				ChannelUsed[i] = this;
 				pwmChannel = i;
-				Serial.println("PWM requested on ledcwrite channel " + String(i) + " using timer "+String(((i/2)%4)) );
+				Serial.println("PWM requested on ledcwrite channel " + String(i) + " using timer "+String(getTimer()) );
 				PWMCount++;
 				return pwmChannel;
 			}
@@ -60,7 +60,10 @@ int ESP32PWM::getChannel() {
 	return pwmChannel;
 }
 
+
 double ESP32PWM::setup(double freq, uint8_t resolution_bits) {
+	checkFrequencyForSideEffects( freq);
+
 	resolutionBits = resolution_bits;
 	if (attached()) {
 		detachPin(pin);
@@ -78,6 +81,7 @@ void ESP32PWM::write(uint32_t duty) {
 	ledcWrite(getChannel(), duty);
 }
 void ESP32PWM::adjustFrequency(double freq, float dutyScaled) {
+	checkFrequencyForSideEffects( freq);
 	if (attached()) {
 		int APin = pin;
 		detachPin(APin); // Remove the PWM during frequency adjust
@@ -101,7 +105,7 @@ uint32_t ESP32PWM::read() {
 	return ledcRead(getChannel());
 }
 double ESP32PWM::readFreq() {
-	return ledcReadFreq(getChannel());
+	return myFreq;
 }
 void ESP32PWM::attachPin(uint8_t pin) {
 	if(hasPwm(pin)){
@@ -114,9 +118,50 @@ void ESP32PWM::attachPin(uint8_t pin) {
 	}
 }
 void ESP32PWM::attachPin(uint8_t pin, double freq, uint8_t resolution_bits) {
+	checkFrequencyForSideEffects( freq);
 	if(hasPwm(pin))
 		setup(freq, resolution_bits);
 	attachPin(pin);
+}
+
+/* Side effects of frequency changes happen because of shared timers
+ *
+ * LEDC Chan to Group/Channel/Timer Mapping
+** ledc: 0  => Group: 0, Channel: 0, Timer: 0
+** ledc: 1  => Group: 0, Channel: 1, Timer: 0
+** ledc: 2  => Group: 0, Channel: 2, Timer: 1
+** ledc: 3  => Group: 0, Channel: 3, Timer: 1
+** ledc: 4  => Group: 0, Channel: 4, Timer: 2
+** ledc: 5  => Group: 0, Channel: 5, Timer: 2
+** ledc: 6  => Group: 0, Channel: 6, Timer: 3
+** ledc: 7  => Group: 0, Channel: 7, Timer: 3
+** ledc: 8  => Group: 1, Channel: 0, Timer: 0
+** ledc: 9  => Group: 1, Channel: 1, Timer: 0
+** ledc: 10 => Group: 1, Channel: 2, Timer: 1
+** ledc: 11 => Group: 1, Channel: 3, Timer: 1
+** ledc: 12 => Group: 1, Channel: 4, Timer: 2
+** ledc: 13 => Group: 1, Channel: 5, Timer: 2
+** ledc: 14 => Group: 1, Channel: 6, Timer: 3
+** ledc: 15 => Group: 1, Channel: 7, Timer: 3
+*/
+
+bool ESP32PWM::checkFrequencyForSideEffects(double freq){
+	myFreq=freq;
+	getChannel();
+	for(int i=PWM_BASE_INDEX;i<PWMCount;i++){
+		if(i==pwmChannel)
+			continue;
+		if(ChannelUsed[i]->getTimer()==getTimer()){
+			double diff = abs(ChannelUsed[i]->myFreq-freq);
+			if(abs(diff)>0.1){
+				Serial.println("\tWARNING PWM channel "+String(pwmChannel)+" shares a timer with " + String(i)+"\n"
+								"\tchanging the frequency to "+String(freq)+" Hz will ALSO change channel "+String(i)+" \n\tfrom its previous frequency of "+String(ChannelUsed[i]->myFreq)+" Hz\n"
+								" ");
+				ChannelUsed[i]->myFreq=freq;
+			}
+		}
+	}
+	return true;
 }
 
 void ESP32PWM::detachPin(uint8_t pin) {
