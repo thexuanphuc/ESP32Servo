@@ -52,7 +52,7 @@ public:
 		return attachedState;
 	}
 	static bool hasPwm(int pin){
-        if ((pin == 2) || //1
+        if (
         		(pin == 5) || //1
 				(pin ==4) || //1
         		((pin >= 12) && (pin <= 19)) ||//8
