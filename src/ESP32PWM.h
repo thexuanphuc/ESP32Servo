@@ -53,8 +53,9 @@ public:
 	}
 	static bool hasPwm(int pin){
         if (
-        		(pin == 5) || //1
-				(pin ==4) || //1
+        		(pin ==2) || //1
+        		(pin == 4) || //1
+				(pin ==5) || //1
         		((pin >= 12) && (pin <= 19)) ||//8
 				((pin >= 21) && (pin <= 23)) ||//3
                 ((pin >= 25) && (pin <= 27)) || //3
