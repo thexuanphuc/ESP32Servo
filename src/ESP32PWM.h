@@ -16,13 +16,14 @@
 #include "Arduino.h"
 class ESP32PWM {
 private:
-	void detach();
+
 	void attach(int pin);
 	int pwmChannel = 0;                         // channel number for this servo
 	bool attachedState= false;
 	int pin;
 	uint8_t resolutionBits;
 	double myFreq;
+	int allocatenext(double freq);
 public:
 
 	ESP32PWM();
@@ -40,6 +41,7 @@ public:
 	void        attachPin(uint8_t pin);
 	void        attachPin(uint8_t pin,double freq, uint8_t resolution_bits);
 	void        detachPin(uint8_t pin);
+	void detach();
 	void adjustFrequency(double freq,float dutyScaled);
 	static float mapf(float x, float in_min, float in_max, float out_min, float out_max) {
 		return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
@@ -67,12 +69,14 @@ public:
 		return NUM_PWM-PWMCount;
 	}
 	static int PWMCount;              // the total number of attached servos
+	static int timerCount[4];
 	static ESP32PWM * ChannelUsed[NUM_PWM]; // used to track whether a channel is in service
+	static long timerFreqSet[4];
 	int getTimer(){
-		return ((pwmChannel/2)%4);
+		return timerNum;
 	}
 	bool checkFrequencyForSideEffects(double freq);
-
+	int timerNum = -1;
 };
 
 ESP32PWM* pwmFactory(int pin);
