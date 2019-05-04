@@ -18,6 +18,7 @@ ESP32PWM::ESP32PWM() {
 	resolutionBits = 8;
 	pwmChannel = -1;
 	pin = -1;
+	myFreq=-1;
 }
 
 ESP32PWM::~ESP32PWM() {
@@ -25,10 +26,11 @@ ESP32PWM::~ESP32PWM() {
 }
 
 void ESP32PWM::detach() {
-
+	Serial.println("Detatching " + String(pwmChannel));
 	attachedState = false;
-
-	//Serial.println("Detatching " + String(pwmChannel));
+	ChannelUsed[pwmChannel]=NULL;
+	pwmChannel=-1;
+	PWMCount--;
 }
 
 void ESP32PWM::attach(int p) {
