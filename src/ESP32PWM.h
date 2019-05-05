@@ -24,6 +24,7 @@ private:
 	uint8_t resolutionBits;
 	double myFreq;
 	int allocatenext(double freq);
+
 public:
 
 	ESP32PWM();
@@ -44,6 +45,7 @@ public:
 	void detach();
 	static int timerAndIndexToChannel(int timer, int index);
 	void adjustFrequency(double freq,float dutyScaled);
+	void adjustFrequencyLocal(double freq,float dutyScaled);
 	static float mapf(float x, float in_min, float in_max, float out_min, float out_max) {
 		return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 	}
@@ -78,6 +80,8 @@ public:
 	}
 	bool checkFrequencyForSideEffects(double freq);
 	int timerNum = -1;
+	uint32_t myDuty = 0;
+	float getDutyScaled();
 };
 
 ESP32PWM* pwmFactory(int pin);

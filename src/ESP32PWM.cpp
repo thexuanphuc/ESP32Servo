@@ -27,7 +27,7 @@ ESP32PWM::~ESP32PWM() {
 }
 int ESP32PWM::timerAndIndexToChannel(int timerNum, int index){
 	int localIndex = 0;
-	for (int j = 0; j < NUM_PWM && pwmChannel < 0; j++) {
+	for (int j = 0; j < NUM_PWM; j++) {
 		if (((j / 2) % 4) == timerNum) {
 			if (localIndex == index) {
 				return j;
@@ -85,8 +85,7 @@ int ESP32PWM::allocatenext(double freq) {
 void ESP32PWM::detach() {
 	Serial.println("PWM Detatching " + String(pwmChannel));
 	timerCount[getTimer()]--;
-	if(timerCount[getTimer()]<0){
-		timerCount[getTimer()]=0;
+	if(timerCount[getTimer()]==0){
 		timerFreqSet[getTimer()]=-1;// last pwn closed out
 	}
 	timerNum=-1;
@@ -123,30 +122,38 @@ double ESP32PWM::setup(double freq, uint8_t resolution_bits) {
 	}
 	return ledcSetup(getChannel(), freq, resolution_bits);
 }
-
+float ESP32PWM::getDutyScaled(){
+	return mapf((float)myDuty,  0, (float) ((1 << resolutionBits) - 1),0.0, 1.0);
+}
 void ESP32PWM::writeScaled(float duty) {
 	write(mapf(duty, 0.0, 1.0, 0, (float) ((1 << resolutionBits) - 1)));
 }
 void ESP32PWM::write(uint32_t duty) {
+	myDuty=duty;
 	ledcWrite(getChannel(), duty);
 }
-void ESP32PWM::adjustFrequency(double freq, float dutyScaled) {
-	checkFrequencyForSideEffects(freq);
+void ESP32PWM::adjustFrequencyLocal(double freq,float dutyScaled){
 	if (attached()) {
 		int APin = pin;
 		detachPin(APin); // Remove the PWM during frequency adjust
 		writeTone(freq); // update the time base of the PWM
-		timerFreqSet[getTimer()]=(long)freq;
-		for (int i = 0; i < timerCount[getTimer()]; i++) {
-				int pwm = timerAndIndexToChannel(getTimer(), i);
-				ChannelUsed[pwm]->myFreq = freq;
-		}
 		allocatenext( freq);
 		writeScaled(dutyScaled);
 		attachPin(APin); // re-attach the pin after frequency adjust
 	} else {
 		writeTone(freq); // update the time base of the PWM
 		writeScaled(dutyScaled);
+	}
+}
+void ESP32PWM::adjustFrequency(double freq, float dutyScaled) {
+	timerFreqSet[getTimer()]=(long)freq;
+	for (int i = 0; i < timerCount[getTimer()]; i++) {
+			int pwm = timerAndIndexToChannel(getTimer(), i);
+			if(ChannelUsed[pwm]!=NULL){
+				if( ChannelUsed[pwm]->myFreq != freq){
+					ChannelUsed[pwm]->adjustFrequencyLocal(freq, ChannelUsed[pwm]->getDutyScaled());
+				}
+			}
 	}
 }
 double ESP32PWM::writeTone(double freq) {
