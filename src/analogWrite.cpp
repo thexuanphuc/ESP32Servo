@@ -18,8 +18,7 @@ void analogWrite(uint8_t APin, uint16_t AValue) {
 		chan = new ESP32PWM();
 	}
 	if(!chan->attached()){
-		chan->setup(1000, 8); // 1KHz 8 bit
-		chan->attachPin(APin); // This adds the PWM instance to the factory list
+		chan->attachPin(APin,1000, 8); // This adds the PWM instance to the factory list
 		//Serial.println("Attaching AnalogWrite : "+String(APin)+" on PWM "+String(chan->getChannel()));
 	}
 	if (AValue == 0) {
