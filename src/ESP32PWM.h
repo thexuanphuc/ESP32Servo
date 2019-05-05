@@ -27,8 +27,6 @@ private:
 
 	static double _ledcSetupTimerFreq(uint8_t chan, double freq,
 			uint8_t bit_num);
-	static void _ledcSetupTimer(uint8_t chan, uint32_t div_num, uint8_t bit_num,
-			bool apb_clk);
 
 	bool checkFrequencyForSideEffects(double freq);
 
@@ -66,7 +64,7 @@ public:
 	//Adjust frequency
 	double writeTone(double freq);
 	double writeNote(note_t note, uint8_t octave);
-	void adjustFrequency(double freq, float dutyScaled);
+	void adjustFrequency(double freq, float dutyScaled=-1);
 
 	// Read pwm data
 	uint32_t read();

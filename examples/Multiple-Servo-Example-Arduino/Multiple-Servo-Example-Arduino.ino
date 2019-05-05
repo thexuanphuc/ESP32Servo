@@ -69,7 +69,7 @@ void setup() {
 void loop() {
 	servo1.attach(servo1Pin, minUs, maxUs);
 	servo2.attach(servo2Pin, minUs, maxUs);
-	pwm.attachPin(27, 10000, 12);
+	pwm.attachPin(27, 10000);//10khz
 	servo3.attach(servo3Pin, minUs, maxUs);
 	servo4.attach(servo4Pin, minUs, maxUs);
 
@@ -130,7 +130,7 @@ void loop() {
 	servo4.detach();
 	pwm.detachPin(27);
 
-	delay(1000);
+	delay(5000);
 
 }
 
