@@ -25,6 +25,18 @@ ESP32PWM::ESP32PWM() {
 ESP32PWM::~ESP32PWM() {
 	// TODO Auto-generated destructor stub
 }
+int ESP32PWM::timerAndIndexToChannel(int timerNum, int index){
+	int localIndex = 0;
+	for (int j = 0; j < NUM_PWM && pwmChannel < 0; j++) {
+		if (((j / 2) % 4) == timerNum) {
+			if (localIndex == index) {
+				return j;
+			}
+			localIndex++;
+		}
+	}
+	return -1;
+}
 int ESP32PWM::allocatenext(double freq) {
 	if (PWMCount == -1) {
 		for (int i = 0; i < NUM_PWM; i++)
@@ -44,23 +56,18 @@ int ESP32PWM::allocatenext(double freq) {
 				//Serial.println("Free channel timer "+String(i)+" at freq "+String(freq)+" remaining "+String(4-timerCount[i]));
 
 				timerNum = i;
-				int localIndex = 0;
-				for (int j = 0; j < NUM_PWM && pwmChannel < 0; j++) {
-					if (((j / 2) % 4) == timerNum) {
-						if (localIndex == timerCount[timerNum]) {
-							pwmChannel = j;
-							Serial.println(
-										"PWM on ledcwrite channel " + String(pwmChannel)
-												+ " using timer " + String(timerNum)+" to freq "+String(freq));
-							ChannelUsed[pwmChannel] = this;
-							timerCount[timerNum]++;
-							PWMCount++;
-							return pwmChannel;
-						}
-						localIndex++;
-					}
+				int myTimerNumber = timerAndIndexToChannel( timerNum, timerCount[timerNum]);
+				if(myTimerNumber>0){
+					pwmChannel = myTimerNumber;
+					Serial.println(
+								"PWM on ledcwrite channel " + String(pwmChannel)
+										+ " using timer " + String(timerNum)+" to freq "+String(freq));
+					ChannelUsed[pwmChannel] = this;
+					timerCount[timerNum]++;
+					PWMCount++;
+					myFreq = freq;
+					return pwmChannel;
 				}
-
 			}
 			else{
 //				if(timerFreqSet[i]>0)
@@ -129,6 +136,12 @@ void ESP32PWM::adjustFrequency(double freq, float dutyScaled) {
 		int APin = pin;
 		detachPin(APin); // Remove the PWM during frequency adjust
 		writeTone(freq); // update the time base of the PWM
+		timerFreqSet[getTimer()]=(long)freq;
+		for (int i = 0; i < timerCount[getTimer()]; i++) {
+				int pwm = timerAndIndexToChannel(getTimer(), i);
+				ChannelUsed[pwm]->myFreq = freq;
+		}
+		allocatenext( freq);
 		writeScaled(dutyScaled);
 		attachPin(APin); // re-attach the pin after frequency adjust
 	} else {
@@ -149,6 +162,10 @@ uint32_t ESP32PWM::read() {
 }
 double ESP32PWM::readFreq() {
 	return myFreq;
+}
+void ESP32PWM::detachPin(uint8_t pin) {
+	detach();
+	ledcDetachPin(pin);
 }
 void ESP32PWM::attachPin(uint8_t pin) {
 
@@ -193,35 +210,34 @@ void ESP32PWM::attachPin(uint8_t pin, double freq, uint8_t resolution_bits) {
  */
 
 bool ESP32PWM::checkFrequencyForSideEffects(double freq) {
-	myFreq = freq;
+
 	allocatenext( freq);
-	for (int i = PWM_BASE_INDEX; i < NUM_PWM; i++) {
-		if (i == pwmChannel)
+	for (int i = 0; i < timerCount[getTimer()]; i++) {
+		int pwm = timerAndIndexToChannel(getTimer(), i);
+
+		if (pwm == pwmChannel)
 			continue;
-		if(ChannelUsed[i]!=NULL)
-		if (ChannelUsed[i]->getTimer() == getTimer()) {
-			double diff = abs(ChannelUsed[i]->myFreq - freq);
+		if(ChannelUsed[pwm]!=NULL)
+		if (ChannelUsed[pwm]->getTimer() == getTimer()) {
+			double diff = abs(ChannelUsed[pwm]->myFreq - freq);
 			if (abs(diff) > 0.1) {
 				Serial.println(
 						"\tWARNING PWM channel " + String(pwmChannel)
-								+ " shares a timer with " + String(i) + "\n"
+								+ " shares a timer with channel " + String(pwm) + "\n"
 										"\tchanging the frequency to "
 								+ String(freq) + " Hz will ALSO change channel "
-								+ String(i)
+								+ String(pwm)
 								+ " \n\tfrom its previous frequency of "
-								+ String(ChannelUsed[i]->myFreq) + " Hz\n"
+								+ String(ChannelUsed[pwm]->myFreq) + " Hz\n"
 										" ");
-				ChannelUsed[i]->myFreq = freq;
+				ChannelUsed[pwm]->myFreq = freq;
 			}
 		}
 	}
 	return true;
 }
 
-void ESP32PWM::detachPin(uint8_t pin) {
-	detach();
-	return ledcDetachPin(pin);
-}
+
 
 ESP32PWM* pwmFactory(int pin) {
 	for (int i = 0; i < NUM_PWM; i++)
