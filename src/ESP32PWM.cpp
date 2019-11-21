@@ -29,7 +29,10 @@ ESP32PWM::ESP32PWM() {
 }
 
 ESP32PWM::~ESP32PWM() {
-	detachPin(pin);
+	if (attached()) {
+		ledcDetachPin(pin);
+	}
+	deallocate();
 }
 
 double ESP32PWM::_ledcSetupTimerFreq(uint8_t chan, double freq,
@@ -224,9 +227,7 @@ void ESP32PWM::attachPin(uint8_t pin, double freq, uint8_t resolution_bits) {
 	attachPin(pin);
 }
 void ESP32PWM::detachPin(int pin) {
-	if (attached()) {
-		ledcDetachPin(pin);
-	}
+	ledcDetachPin(pin);
 	deallocate();
 }
 /* Side effects of frequency changes happen because of shared timers
