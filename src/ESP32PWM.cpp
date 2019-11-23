@@ -29,7 +29,10 @@ ESP32PWM::ESP32PWM() {
 }
 
 ESP32PWM::~ESP32PWM() {
-	// TODO Auto-generated destructor stub
+	if (attached()) {
+		ledcDetachPin(pin);
+	}
+	deallocate();
 }
 
 double ESP32PWM::_ledcSetupTimerFreq(uint8_t chan, double freq,
