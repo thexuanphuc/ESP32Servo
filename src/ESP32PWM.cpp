@@ -71,10 +71,10 @@ int ESP32PWM::allocatenext(double freq) {
 						timerCount[timerNum]);
 				if (myTimerNumber >= 0) {
 					pwmChannel = myTimerNumber;
-					Serial.println(
-							"PWM on ledc channel #" + String(pwmChannel)
-									+ " using 'timer " + String(timerNum)
-									+ "' to freq " + String(freq) + "Hz");
+// 					Serial.println(
+// 							"PWM on ledc channel #" + String(pwmChannel)
+// 									+ " using 'timer " + String(timerNum)
+// 									+ "' to freq " + String(freq) + "Hz");
 					ChannelUsed[pwmChannel] = this;
 					timerCount[timerNum]++;
 					PWMCount++;
@@ -100,7 +100,7 @@ int ESP32PWM::allocatenext(double freq) {
 void ESP32PWM::deallocate() {
 	if (pwmChannel < 0)
 		return;
-	Serial.println("PWM deallocating LEDc #" + String(pwmChannel));
+// 	Serial.println("PWM deallocating LEDc #" + String(pwmChannel));
 	timerCount[getTimer()]--;
 	if (timerCount[getTimer()] == 0) {
 		timerFreqSet[getTimer()] = -1; // last pwn closed out
