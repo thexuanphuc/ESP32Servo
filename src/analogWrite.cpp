@@ -17,10 +17,6 @@ void analogWrite(uint8_t APin, uint16_t AValue) {
 	if (chan == NULL) {
 		chan = new ESP32PWM();
 	}
-	if(!chan->attached()){
-		chan->attachPin(APin,1000, 8); // This adds the PWM instance to the factory list
-		//Serial.println("Attaching AnalogWrite : "+String(APin)+" on PWM "+String(chan->getChannel()));
-	}
 	if (AValue == 0) {
 		if (chan->attached()) {
 			chan->detachPin(APin);
@@ -34,6 +30,12 @@ void analogWrite(uint8_t APin, uint16_t AValue) {
 		}
 		digitalWrite(APin, 1);
 	} else
+	{
+		if(!chan->attached()){
+			chan->attachPin(APin,1000, 8); // This adds the PWM instance to the factory list
+			//Serial.println("Attaching AnalogWrite : "+String(APin)+" on PWM "+String(chan->getChannel()));
+		}
 		chan->write(AValue);
-//    Serial.print( "ledcWrite: " ); Serial.print(  CESP32PWMPinMap[ APin ] - 1 ); Serial.print( " " ); Serial.println( AValue );
+		//    Serial.print( "ledcWrite: " ); Serial.print(  CESP32PWMPinMap[ APin ] - 1 ); Serial.print( " " ); Serial.println( AValue );
+	}
 }
