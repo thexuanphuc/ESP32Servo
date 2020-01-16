@@ -179,6 +179,7 @@ double ESP32PWM::writeTone(double freq) {
 				ChannelUsed[pwm]->adjustFrequencyLocal(freq,
 						ChannelUsed[pwm]->getDutyScaled());
 			}
+			write(1 << (resolutionBits-1)); // writeScaled(0.5);
 		}
 	}
 
