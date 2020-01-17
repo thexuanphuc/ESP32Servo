@@ -30,6 +30,9 @@ void noTone(int pin){
 	ESP32PWM* chan = pwmFactory(pin);
 	if (chan != NULL) {
 		if(chan->attached())
+		{
 			chan->detachPin(pin);
+			delete chan;
+		}
 	}
 }
