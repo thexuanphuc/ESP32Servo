@@ -14,23 +14,25 @@ void analogWrite(uint8_t APin, uint16_t AValue) {
 		return;
 	}
 	ESP32PWM* chan = pwmFactory(APin);
-	if (chan == NULL) {
-		chan = new ESP32PWM();
-	}
 	if (AValue == 0) {
-		if (chan->attached()) {
+		if ((chan != NULL) && chan->attached()) {
 			chan->detachPin(APin);
+			delete chan;
 			pinMode(APin, OUTPUT);
 		}
 		digitalWrite(APin, 0);
 	} else if (AValue >= 255) {
-		if (chan->attached()) {
+		if ((chan != NULL) && chan->attached()) {
 			chan->detachPin(APin);
+			delete chan;
 			pinMode(APin, OUTPUT);
 		}
 		digitalWrite(APin, 1);
 	} else
 	{
+		if (chan == NULL) {
+			chan = new ESP32PWM();
+		}
 		if(!chan->attached()){
 			chan->attachPin(APin,1000, 8); // This adds the PWM instance to the factory list
 			//Serial.println("Attaching AnalogWrite : "+String(APin)+" on PWM "+String(chan->getChannel()));
