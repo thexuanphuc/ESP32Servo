@@ -16,6 +16,7 @@ else
 	echo "# A simple README file for the gh-pages branch" > README.md
 	git add README.md
 	git commit -m"Replaced gh-pages html with simple readme"
+	git push -u origin gh-pages
 fi
 cd ..
 
