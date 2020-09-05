@@ -97,6 +97,11 @@ public:
 		return pin;
 	}
 	static bool hasPwm(int pin) {
+#if defined(ARDUINO_ESP32S2_DEV)
+		if ((pin >=1 && pin <= 21) || //20
+				(pin == 26) || //1
+				(pin >= 33 && pin <= 42)) //10
+#else
 		if ((pin == 2) || //1
 				(pin == 4) || //1
 				(pin == 5) || //1
@@ -104,6 +109,7 @@ public:
 				((pin >= 21) && (pin <= 23)) || //3
 				((pin >= 25) && (pin <= 27)) || //3
 				(pin == 32) || (pin == 33)) //2
+#endif
 			return true;
 		return false;
 	}

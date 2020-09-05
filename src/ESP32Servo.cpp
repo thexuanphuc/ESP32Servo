@@ -80,7 +80,8 @@ int Servo::attach(int pin, int min, int max)
 {
 
 #ifdef ENFORCE_PINS
-        // Recommend only the following pins 2,4,12-19,21-23,25-27,32-33
+        // ESP32 Recommend only the following pins 2,4,12-19,21-23,25-27,32-33
+		// ESP32-S2 only the following pins 1-21,26,33-42
         if (pwm.hasPwm(pin))
         {
 #endif
@@ -97,7 +98,13 @@ int Servo::attach(int pin, int min, int max)
         }
         else
         {
-        	Serial.println("This pin can not be a servo: "+String(pin)+"\r\nServo availible on: 2,4,5,12-19,21-23,25-27,32-33");
+        	Serial.println("This pin can not be a servo: "+String(pin)+
+#if defined(ARDUINO_ESP32S2_DEV)
+				"\r\nServo availible on: 1-21,26,33-42"
+#else
+				"\r\nServo availible on: 2,4,5,12-19,21-23,25-27,32-33"
+#endif
+			);
             return 0;
         }
 #endif
