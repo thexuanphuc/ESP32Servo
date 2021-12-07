@@ -152,18 +152,18 @@ double ESP32PWM::setup(double freq, uint8_t resolution_bits) {
 	}
 	return ledcSetup(getChannel(), freq, resolution_bits);
 }
-float ESP32PWM::getDutyScaled() {
-	return mapf((float) myDuty, 0, (float) ((1 << resolutionBits) - 1), 0.0,
+double ESP32PWM::getDutyScaled() {
+	return mapf((double) myDuty, 0, (double) ((1 << resolutionBits) - 1), 0.0,
 			1.0);
 }
-void ESP32PWM::writeScaled(float duty) {
-	write(mapf(duty, 0.0, 1.0, 0, (float) ((1 << resolutionBits) - 1)));
+void ESP32PWM::writeScaled(double duty) {
+	write(mapf(duty, 0.0, 1.0, 0, (double) ((1 << resolutionBits) - 1)));
 }
 void ESP32PWM::write(uint32_t duty) {
 	myDuty = duty;
 	ledcWrite(getChannel(), duty);
 }
-void ESP32PWM::adjustFrequencyLocal(double freq, float dutyScaled) {
+void ESP32PWM::adjustFrequencyLocal(double freq, double dutyScaled) {
 	timerFreqSet[getTimer()] = (long) freq;
 	myFreq = freq;
 	if (attached()) {
@@ -177,7 +177,7 @@ void ESP32PWM::adjustFrequencyLocal(double freq, float dutyScaled) {
 		writeScaled(dutyScaled);
 	}
 }
-void ESP32PWM::adjustFrequency(double freq, float dutyScaled) {
+void ESP32PWM::adjustFrequency(double freq, double dutyScaled) {
 	if(dutyScaled<0)
 		dutyScaled=getDutyScaled();
 	writeScaled(dutyScaled);
