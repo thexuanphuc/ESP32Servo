@@ -30,9 +30,9 @@ private:
 
 	bool checkFrequencyForSideEffects(double freq);
 
-	void adjustFrequencyLocal(double freq, float dutyScaled);
-	static float mapf(float x, float in_min, float in_max, float out_min,
-			float out_max) {
+	void adjustFrequencyLocal(double freq, double dutyScaled);
+	static double mapf(double x, double in_min, double in_max, double out_min,
+			double out_max) {
 		if(x>in_max)
 			return out_max;
 		if(x<in_min)
@@ -60,16 +60,16 @@ public:
 	// write raw duty cycle
 	void write(uint32_t duty);
 	// Write a duty cycle to the PWM using a unit vector from 0.0-1.0
-	void writeScaled(float duty);
+	void writeScaled(double duty);
 	//Adjust frequency
 	double writeTone(double freq);
 	double writeNote(note_t note, uint8_t octave);
-	void adjustFrequency(double freq, float dutyScaled=-1);
+	void adjustFrequency(double freq, double dutyScaled=-1);
 
 	// Read pwm data
 	uint32_t read();
 	double readFreq();
-	float getDutyScaled();
+	double getDutyScaled();
 
 	//Timer data
 	static int timerAndIndexToChannel(int timer, int index);

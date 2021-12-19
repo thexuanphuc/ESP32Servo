@@ -232,12 +232,12 @@ int Servo::readTimerWidth()
 
 int Servo::usToTicks(int usec)
 {
-    return (int)((float)usec / ((float)REFRESH_USEC / (float)this->timer_width_ticks)*(((float)REFRESH_CPS)/50.0));
+    return (int)((double)usec / ((double)REFRESH_USEC / (double)this->timer_width_ticks)*(((double)REFRESH_CPS)/50.0));
 }
 
 int Servo::ticksToUs(int ticks)
 {
-    return (int)((float)ticks * ((float)REFRESH_USEC / (float)this->timer_width_ticks)/(((float)REFRESH_CPS)/50.0));
+    return (int)((double)ticks * ((double)REFRESH_USEC / (double)this->timer_width_ticks)/(((double)REFRESH_CPS)/50.0));
 }
 
  
