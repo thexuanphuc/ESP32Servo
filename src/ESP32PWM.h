@@ -110,6 +110,7 @@ public:
 	static int channelsRemaining() {
 		return NUM_PWM - PWMCount;
 	}
+	static boolean DISABLE_DAC;
 
 
 };
