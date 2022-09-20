@@ -89,12 +89,9 @@ int Servo::attach(int pin, int min, int max)
             // OK to proceed; first check for new/reuse
             if (this->pinNumber < 0) // we are attaching to a new or previously detached pin; we need to initialize/reinitialize
             {
-                Serial.println("attach (before) : this->timer_width : "+String(this->timer_width)+" this->timer_width_ticks "+String(this->timer_width_ticks) );    
-                this->ticks = DEFAULT_PULSE_WIDTH_TICKS;
-//                if( this->timer_width != DEFAULT_TIMER_WIDTH ) Not sure why it's here again as it is initialized in the constructor   
-//                    this->timer_width = DEFAULT_TIMER_WIDTH;
+//                this->ticks = DEFAULT_PULSE_WIDTH_TICKS;
+//                this->timer_width = DEFAULT_TIMER_WIDTH;
                 this->timer_width_ticks = pow(2,this->timer_width);
-                Serial.println("attach (after) : this->timer_width : "+String(this->timer_width)+" this->timer_width_ticks "+String(this->timer_width_ticks) );    
             }
             this->pinNumber = pin;
 #ifdef ENFORCE_PINS
@@ -198,10 +195,8 @@ bool Servo::attached()
 void Servo::setTimerWidth(int value)
 {
     // only allow values between 16 and 20
-    if (value < 16)
-        value = 16;
-    //if (value < MINIMUM_TIMER_WIDTH )
-    //    value = MINIMUM_TIMER_WIDTH;
+    if (value < MINIMUM_TIMER_WIDTH )
+        value = MINIMUM_TIMER_WIDTH;
     else if (value > 20)
         value = 20;
         
