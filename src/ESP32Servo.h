@@ -82,6 +82,7 @@
 //#define DEFAULT_uS_HIGH 2400
 
 #define DEFAULT_TIMER_WIDTH 16
+#define MINIMUM_TIMER_WIDTH 8
 #define DEFAULT_TIMER_WIDTH_TICKS 65536
 
 #define ESP32_Servo_VERSION           1     // software version of this library
