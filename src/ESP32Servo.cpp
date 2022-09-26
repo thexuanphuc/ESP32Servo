@@ -89,8 +89,8 @@ int Servo::attach(int pin, int min, int max)
             // OK to proceed; first check for new/reuse
             if (this->pinNumber < 0) // we are attaching to a new or previously detached pin; we need to initialize/reinitialize
             {
-//                this->ticks = DEFAULT_PULSE_WIDTH_TICKS;
-//                this->timer_width = DEFAULT_TIMER_WIDTH;
+                this->ticks = DEFAULT_PULSE_WIDTH_TICKS;
+                this->timer_width = DEFAULT_TIMER_WIDTH;
                 this->timer_width_ticks = pow(2,this->timer_width);
             }
             this->pinNumber = pin;
@@ -194,11 +194,12 @@ bool Servo::attached()
 
 void Servo::setTimerWidth(int value)
 {
-    // only allow values between 16 and 20
-    if (value < MINIMUM_TIMER_WIDTH )
-        value = MINIMUM_TIMER_WIDTH;
-    else if (value > 20)
-        value = 20;
+    // only allow values between 10 and 14 for ESP32-C3
+    // only allow values between 16 and 20 for other ESP32
+    if (value < DEFAULT_TIMER_WIDTH )
+        value = DEFAULT_TIMER_WIDTH;
+    else if (value > MAXIMUM_TIMER_WIDTH)
+        value = MAXIMUM_TIMER_WIDTH;
         
     // Fix the current ticks value after timer width change
     // The user can reset the tick value with a write() or writeUs()
