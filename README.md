@@ -1,6 +1,6 @@
 # Servo Library for ESP32
 
-Specifically for the V3.0.0 of Arduino ESP32
+Specifically for the V3.0.0 of Arduino ESP32. All ADC's have been updated to work correctly with the new release
 
 https://github.com/espressif/arduino-esp32/releases
 
