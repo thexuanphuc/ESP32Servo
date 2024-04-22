@@ -161,15 +161,18 @@ void Servo::write(int value)
 
 void Servo::writeMicroseconds(int value)
 {
+    writeTicks(usToTicks(value));  // convert to ticks
+}
+
+void Servo::writeTicks(int value)
+{
     // calculate and store the values for the given channel
     if (this->attached())   // ensure channel is valid
     {
-        if (value < this->min)          // ensure pulse width is valid
-            value = this->min;
-        else if (value > this->max)
-            value = this->max;
-
-        value = usToTicks(value);  // convert to ticks
+        if (value < usToTicks(this->min))      // ensure ticks are in range
+            value = usToTicks(this->min);
+        else if (value > usToTicks(this->max))
+            value = usToTicks(this->max);
         this->ticks = value;
         // do the actual write
         pwm.write( this->ticks);
@@ -200,6 +203,11 @@ int Servo::readMicroseconds()
     }
 
     return (pulsewidthUsec);
+}
+
+int Servo::readTicks()
+{
+    return this->ticks;
 }
 
 bool Servo::attached()
