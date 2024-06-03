@@ -50,14 +50,14 @@ ESP32PWM::ESP32PWM() {
 
 ESP32PWM::~ESP32PWM() {
 	if (attached()) {
-		ledcDetachPin(pin);
+		ledcDetach(pin);
 	}
 	deallocate();
 }
 
-double ESP32PWM::_ledcSetupTimerFreq(uint8_t chan, double freq,
+double ESP32PWM::_ledcSetupTimerFreq(uint8_t pin, double freq,
 		uint8_t bit_num) {
-	return ledcSetup(chan, freq, bit_num);
+	return ledcAttach(pin, freq, bit_num);
 
 }
 
@@ -147,12 +147,12 @@ double ESP32PWM::setup(double freq, uint8_t resolution_bits) {
 
 	resolutionBits = resolution_bits;
 	if (attached()) {
-		ledcDetachPin(pin);
-		double val = ledcSetup(getChannel(), freq, resolution_bits);
+		ledcDetach(pin);
+		double val = ledcAttach(getPin(), freq, resolution_bits);
 		attachPin(pin);
 		return val;
 	}
-	return ledcSetup(getChannel(), freq, resolution_bits);
+	return ledcAttach(getPin(), freq, resolution_bits);
 }
 double ESP32PWM::getDutyScaled() {
 	return mapf((double) myDuty, 0, (double) ((1 << resolutionBits) - 1), 0.0,
@@ -163,19 +163,19 @@ void ESP32PWM::writeScaled(double duty) {
 }
 void ESP32PWM::write(uint32_t duty) {
 	myDuty = duty;
-	ledcWrite(getChannel(), duty);
+	ledcWrite(getPin(), duty);
 }
 void ESP32PWM::adjustFrequencyLocal(double freq, double dutyScaled) {
 	timerFreqSet[getTimer()] = (long) freq;
 	myFreq = freq;
 	if (attached()) {
-		ledcDetachPin(pin);
+		ledcDetach(pin);
 		// Remove the PWM during frequency adjust
-		_ledcSetupTimerFreq(getChannel(), freq, resolutionBits);
+		_ledcSetupTimerFreq(getPin(), freq, resolutionBits);
 		writeScaled(dutyScaled);
-		ledcAttachPin(pin, getChannel()); // re-attach the pin after frequency adjust
+		ledcAttach(getPin(), freq, resolutionBits); // re-attach the pin after frequency adjust
 	} else {
-		_ledcSetupTimerFreq(getChannel(), freq, resolutionBits);
+		_ledcSetupTimerFreq(getPin(), freq, resolutionBits);
 		writeScaled(dutyScaled);
 	}
 }
@@ -221,7 +221,7 @@ double ESP32PWM::writeNote(note_t note, uint8_t octave) {
 	return writeTone(noteFreq);
 }
 uint32_t ESP32PWM::read() {
-	return ledcRead(getChannel());
+	return ledcRead(getPin());
 }
 double ESP32PWM::readFreq() {
 	return myFreq;
@@ -234,7 +234,7 @@ void ESP32PWM::attachPin(uint8_t pin) {
 
 	if (hasPwm(pin)) {
 		attach(pin);
-		ledcAttachPin(pin, getChannel());
+		ledcAttach(pin, readFreq(), resolutionBits);
 	} else {
 		
 #if defined(CONFIG_IDF_TARGET_ESP32S2)
@@ -261,7 +261,7 @@ void ESP32PWM::attachPin(uint8_t pin, double freq, uint8_t resolution_bits) {
 	attachPin(pin);
 }
 void ESP32PWM::detachPin(int pin) {
-	ledcDetachPin(pin);
+	ledcDetach(pin);
 	deallocate();
 }
 /* Side effects of frequency changes happen because of shared timers
