@@ -139,7 +139,7 @@ int ESP32PWM::allocatenext(double freq) {
 void ESP32PWM::deallocate() {
 	if (pwmChannel < 0)
 		return;
-	ESP_LOGV(TAG, "PWM deallocating LEDc #%d",pwmChannel);
+	ESP_LOGE(TAG, "PWM deallocating LEDc #%d",pwmChannel);
 	timerCount[getTimer()]--;
 	if (timerCount[getTimer()] == 0) {
 		timerFreqSet[getTimer()] = -1; // last pwn closed out
@@ -304,17 +304,21 @@ void ESP32PWM::attachPin(uint8_t pin) {
 
 	if (hasPwm(pin)) {
 		attach(pin);
+		bool success;
 #ifdef ESP_ARDUINO_VERSION_MAJOR
 #if ESP_ARDUINO_VERSION >= ESP_ARDUINO_VERSION_VAL(3, 0, 0)
-		ledcAttach(pin, readFreq(), resolutionBits);
+		success=ledcAttach(pin, readFreq(), resolutionBits);
 #else
-		ledcAttachPin(pin, getChannel());
+		success=ledcAttachPin(pin, getChannel());
 #endif
 #else
-		ledcAttachPin(pin, getChannel());
+		success=ledcAttachPin(pin, getChannel());
 #endif
-
-	} else {
+		if(success)
+			return;
+		ESP_LOGE(TAG, "ERROR PWM channel failed to configure on!",pin);
+		return;
+	}
 		
 #if defined(CONFIG_IDF_TARGET_ESP32S2)
 						ESP_LOGE(TAG, "ERROR PWM channel unavailable on pin requested! %d PWM available on: 1-21,26,33-42",pin);
@@ -326,17 +330,15 @@ void ESP32PWM::attachPin(uint8_t pin) {
 						ESP_LOGE(TAG, "ERROR PWM channel unavailable on pin requested! %d PWM available on: 2,4,5,12-19,21-23,25-27,32-33",pin);
 #endif
 
-// Possible PWM GPIO pins on the ESP32-S3: 0(used by on-board button),1-21,35-45,47,48(used by on-board LED)
-// Possible PWM GPIO pins on the ESP32-C3: 0(used by on-board button),1-7,8(used by on-board LED),9-10,18-21
-		
-		return;
-	}
-	//Serial.print(" on pin "+String(pin));
 }
 void ESP32PWM::attachPin(uint8_t pin, double freq, uint8_t resolution_bits) {
 
-	if (hasPwm(pin))
-		setup(freq, resolution_bits);
+	if (hasPwm(pin)){
+		int ret=setup(freq, resolution_bits);
+		ESP_LOGW(TAG, "Pin Setup %d with code %d",pin,ret);
+	}
+	else
+		ESP_LOGE(TAG, "ERROR Pin Failed %d ",pin);
 	attachPin(pin);
 }
 void ESP32PWM::detachPin(int pin) {
