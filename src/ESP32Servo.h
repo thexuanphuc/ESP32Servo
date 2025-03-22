@@ -70,12 +70,13 @@
 //Enforce only using PWM pins on the ESP32
 #define ENFORCE_PINS
 // Default Arduino Servo.h
-#define DEFAULT_uS_LOW 544
-#define DEFAULT_uS_HIGH 2400
+//#define DEFAULT_uS_LOW 544
+//#define DEFAULT_uS_HIGH 2400
 
 // Values for TowerPro MG995 large servos (and many other hobbyist servos)
-//#define DEFAULT_uS_LOW 1000        // 1000us
-//#define DEFAULT_uS_HIGH 2000      // 2000us
+// for motor drone
+#define DEFAULT_uS_LOW 1000
+#define DEFAULT_uS_HIGH 2000
 
 // Values for TowerPro SG90 small servos
 //#define DEFAULT_uS_LOW 400
@@ -96,8 +97,11 @@
 
 #define MIN_PULSE_WIDTH       500     // the shortest pulse sent to a servo  
 #define MAX_PULSE_WIDTH      2500     // the longest pulse sent to a servo 
-#define DEFAULT_PULSE_WIDTH  1500     // default pulse width when servo is attached
-#define DEFAULT_PULSE_WIDTH_TICKS 4825
+#define DEFAULT_PULSE_WIDTH  1000     // default pulse width when servo is attached
+// we want to set default for 100 Hz, input = 1000 ms
+// DEFAULT_PULSE_WIDTH * pow(2, DEFAULT_TIMER_WIDTH) / (REFRESH_USEC / 2) = 103
+
+#define DEFAULT_PULSE_WIDTH_TICKS 103
 //#define REFRESH_CPS            50
 #define REFRESH_USEC         20000
 
@@ -165,7 +169,7 @@ private:
 	int timer_width_ticks = DEFAULT_TIMER_WIDTH_TICKS; // no. of ticks at rollover; varies with width
 	ESP32PWM * getPwm(); // get the PWM object
 	ESP32PWM pwm;
-	int REFRESH_CPS = 50;
+	int REFRESH_CPS = 100; // we set the default frequency to 100 Hz
 
 };
 #endif
